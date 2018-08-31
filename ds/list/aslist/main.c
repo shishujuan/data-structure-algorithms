@@ -377,6 +377,9 @@ void testListEnumerateAdd()
 }
 
 
+/******************/
+/*** 链表环判断 ***/
+/******************/
 /**
  * 检测链表是否有环-Flod判圈算法
  * 若存在环，返回相遇结点，否则返回NULL
@@ -437,6 +440,72 @@ void testListDetectLoop()
 }
 
 
+/*******************/
+/*链表倒数第K个结点*/
+/*******************/
+/**
+* 链表倒数第K个结点-遍历两次算法
+*/
+ListNode *getLastKthNodeTwice(ListNode *head, int k)
+{
+	int len = listLength(head);		
+	if (k > len)
+		return NULL;
+
+    ListNode *current = head; 
+    int i;
+    for (i = 0; i < len-k; i++)  //遍历链表，找出第N-K+1个结点
+	    current = current->next;
+
+    return current;
+}
+
+/**
+* 链表倒数第K个结点-遍历一次算法
+*/
+ListNode *getLastKthNodeOnce(ListNode *head, int k)
+{
+	ListNode *p1, *p2;
+	p1 = p2 = head;
+
+	for(; k > 0; k--) {
+		if (!p2) // 链表长度不够K
+			return NULL;
+		p2 = p2->next;
+	}
+
+	while (p2) {
+		p1 = p1->next;
+		p2 = p2->next;
+	}
+	return p1;
+}
+
+/**
+* 链表倒数第K个结点测试函数
+*/
+void testGetLastKthNode()
+{
+    printf("\nTestGetLastKthNode\n");
+    int a[] = {1, 2, 3, 4};
+    ListNode *head = listCreate(a, ALEN(a));
+
+	int k = 3;
+    ListNode *node = getLastKthNodeTwice(head, k);
+	if (node) {
+		printf("Last Kth Node: %d\n", node->value);
+	} else {
+		printf("K > List LEN\n");
+	}
+
+    node = getLastKthNodeOnce(head, k);
+	if (node) {
+		printf("Last Kth Node: %d\n", node->value);
+	} else {
+		printf("K > List LEN\n");
+	}
+}
+
 int main(void) 
 {
     testListModify();
@@ -446,5 +515,6 @@ int main(void)
     testListIntersect();
     testListEnumerateAdd();
     testListDetectLoop();
+	testGetLastKthNode();
     return 0;
 }
