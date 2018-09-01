@@ -108,6 +108,8 @@ void listTraverse(ListNode *head)
         printf("%d", current->value);
         printf("->");
         current = current->next;
+        if (current == head) // 处理首尾循环链表情况
+            break;
     }
 
     printf("NULL\n");

@@ -13,25 +13,28 @@ void testListModify()
 {
     printf("\nTestListModify\n");
     int a[] = {1, 2, 3, 4, 5, 6};
+    printf("Origin List:\n");
     ListNode *head = listCreate(a, ALEN(a));
+    listTraverse(head);
+
+    printf("Del Node 3\n");
     head = listDelNode(head, 3);
-    if (debug)
-        listTraverse(head);
+    listTraverse(head);
     
+    printf("Del Node 1\n");
     head = listDelNode(head, 1);
-    if (debug)
-        listTraverse(head);
+    listTraverse(head);
     
     head = listDelNode(head, 6);
     head = listAddNodeTail(head, 7);
-    if (debug)
-        listTraverse(head);
+    printf("Del Node 6, Add Tail 7\n");
+    listTraverse(head);
     
     head = listDelNode(head, 4);
     head = listAddNodeTail(head, 8);
     head = listAddNodeHead(head, 9);
-    if (debug)
-        listTraverse(head);
+    printf("Del Node 4, Add Tail 8, Add Head 9\n");
+    listTraverse(head);
 }
 
 
@@ -392,12 +395,10 @@ ListNode *listDetectLoop(ListNode *head)
         slow = slow->next;
         fast = fast->next->next;
         if (slow == fast) {
-            printf("Found Loop\n");
             return slow;
         }
     }
 
-    printf("No Loop\n");
     return NULL;
 }
 
@@ -426,16 +427,118 @@ void testListDetectLoop()
     printf("\nTestListDetectLoop\n");
     int a[] = {1, 2, 3, 4};
     ListNode *head = listCreate(a, ALEN(a));
-    listDetectLoop(head);
+    ListNode *ret = listDetectLoop(head);
+    if (ret) {
+        printf("Found Loop\n");
+    } else {
+        printf("No Loop\n");
+    }
 
     // 构造一个环
     head->next->next->next = head;
     ListNode *loopNode = findLoopNode(head);
     if (loopNode) {
-        printf("Loop start node:%d\n", loopNode->value);
+        printf("Found Loop, start at:%d\n", loopNode->value);
     } else {
-        printf("No Loop start node\n");
+        printf("No Loop\n");
     }
+}
+
+
+/**********************/
+/*有序循环链表插入结点*/
+/**********************/
+
+/**
+ * 简化版-有序无循环链表插入结点
+ */
+ListNode *sortedListAddNode(ListNode *head, int value)
+{
+    ListNode *node = listNewNode(value);
+    if (!head || head->value >= value) { //情况1
+        node->next = head;
+        head = node;
+    } else {  //情况2
+        ListNode *current = head;
+        while (current->next != NULL && current->next->value < value)
+            current = current->next;
+        node->next = current->next;
+        current->next = node;
+    }
+    return head;
+}
+
+/**
+ * 简化版-有序无循环链表插入结点(两种情况一起处理)
+ */
+void sortedListAddNodeUnify(ListNode **head, int value)
+{
+    ListNode *node = listNewNode(value);
+    ListNode **current = head;
+    while ((*current) && (*current)->value < value) {
+        current = &((*current)->next);
+    }
+    node->next = *current;
+    *current = node;
+}
+
+/**
+ * 有序循环链表插入结点
+ */
+ListNode *sortedLoopListAddNode(ListNode *head, int value)
+{
+    ListNode *node = listNewNode(value);
+    ListNode *current = head, *prev = NULL;
+    do {
+        prev = current;
+        current = current->next;
+        if (value >= prev->value && value <= current->value)
+            break;
+    } while (current != head);
+
+    prev->next = node;
+    node->next = current;
+
+    if (current == head && value < current->value) // 判断是否要设置链表头
+        head = node;
+
+    return head;
+}
+
+/**
+* 有序循环链表插入结点测试函数
+*/
+void testSortedAddNode()
+{
+    printf("\nTestSortedAddNode\n");
+    int a[] = {2, 4, 5};
+    ListNode *head = listCreate(a, ALEN(a));
+    listTraverse(head);
+
+    // 添加到头部
+    ListNode *newHead = sortedListAddNode(head, 1);
+    listTraverse(newHead);
+
+    // 添加到链表中间
+    sortedListAddNodeUnify(&newHead, 3);
+    listTraverse(newHead);
+
+    // 添加到链表尾部
+    sortedListAddNodeUnify(&newHead, 6);
+    listTraverse(newHead);
+
+    head = listCreate(a, ALEN(a));
+    head->next->next->next = head; // 构造循环
+    listTraverse(head);
+    head = sortedLoopListAddNode(head, 2); // 插入相等的值测试
+    listTraverse(head);
+    head = sortedLoopListAddNode(head, 1);
+    listTraverse(head);
+    head = sortedLoopListAddNode(head, 3);
+    listTraverse(head);
+    head = sortedLoopListAddNode(head, 6);
+    listTraverse(head);
+    
 }
 
 
@@ -448,14 +551,14 @@ void testListDetectLoop()
 */
 ListNode *getLastKthNodeTwice(ListNode *head, int k)
 {
-	int len = listLength(head);		
-	if (k > len)
-		return NULL;
+    int len = listLength(head);     
+    if (k > len)
+        return NULL;
 
     ListNode *current = head; 
     int i;
     for (i = 0; i < len-k; i++)  //遍历链表，找出第N-K+1个结点
-	    current = current->next;
+        current = current->next;
 
     return current;
 }
@@ -465,20 +568,20 @@ ListNode *getLastKthNodeTwice(ListNode *head, int k)
 */
 ListNode *getLastKthNodeOnce(ListNode *head, int k)
 {
-	ListNode *p1, *p2;
-	p1 = p2 = head;
+    ListNode *p1, *p2;
+    p1 = p2 = head;
 
-	for(; k > 0; k--) {
-		if (!p2) // 链表长度不够K
-			return NULL;
-		p2 = p2->next;
-	}
+    for(; k > 0; k--) {
+        if (!p2) // 链表长度不够K
+            return NULL;
+        p2 = p2->next;
+    }
 
-	while (p2) {
-		p1 = p1->next;
-		p2 = p2->next;
-	}
-	return p1;
+    while (p2) {
+        p1 = p1->next;
+        p2 = p2->next;
+    }
+    return p1;
 }
 
 /**
@@ -490,20 +593,20 @@ void testGetLastKthNode()
     int a[] = {1, 2, 3, 4};
     ListNode *head = listCreate(a, ALEN(a));
 
-	int k = 3;
+    int k = 3;
     ListNode *node = getLastKthNodeTwice(head, k);
-	if (node) {
-		printf("Last Kth Node: %d\n", node->value);
-	} else {
-		printf("K > List LEN\n");
-	}
+    if (node) {
+        printf("Last Kth Node(Twice): %d\n", node->value);
+    } else {
+        printf("K > List LEN\n");
+    }
 
     node = getLastKthNodeOnce(head, k);
-	if (node) {
-		printf("Last Kth Node: %d\n", node->value);
-	} else {
-		printf("K > List LEN\n");
-	}
+    if (node) {
+        printf("Last Kth Node(Once): %d\n", node->value);
+    } else {
+        printf("K > List LEN\n");
+    }
 }
 
 int main(void) 
@@ -515,6 +618,7 @@ int main(void)
     testListIntersect();
     testListEnumerateAdd();
     testListDetectLoop();
-	testGetLastKthNode();
+    testGetLastKthNode();
+    testSortedAddNode();
     return 0;
 }

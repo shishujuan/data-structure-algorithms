@@ -1,7 +1,7 @@
 #ifndef __ASLIST_H__
 #define __ASLIST_H__
 
-#define debug 1
+#define debug 0
 
 typedef struct ListNode {
     struct ListNode *next;
