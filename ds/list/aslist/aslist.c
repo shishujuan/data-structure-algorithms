@@ -33,7 +33,7 @@ ListNode *listAddNodeHead(ListNode *head, int value)
         node->next = head;
 
     head = node;
-	return head;
+    return head;
 }
 
 /**
@@ -123,8 +123,8 @@ ListNode *listCreate(int a[], int len)
     ListNode *head = NULL;
     int i;
     for (i = 0; i < len; i++) {
-    if (!(head = listAddNodeTail(head, a[i])))
-        return NULL;
+        if (!(head = listAddNodeTail(head, a[i])))
+            return NULL;
     }
     return head;
 }
