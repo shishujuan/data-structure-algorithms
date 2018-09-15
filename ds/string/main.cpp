@@ -330,6 +330,7 @@ void printIntArray(int a[], int len)
  */
 void testMaxSlidingWindow()
 {
+    printf("Test MaxSlidingWindow:\n");
     int A[] = {1, 3, -1, -3, 5, 3, 6, 7};
     int w = 3;
     int n = ALEN(A);
@@ -350,9 +351,33 @@ void testMaxSlidingWindow()
 }
 
 
-/******************/
+/*****************/
+/** 字符串全排列 */
+/****************/
+void perm(char *arr, int k, int len) { //k为起始位置，len为数组大小
+    if (k == len-1) { 
+        printf("%s\n", arr);
+	return;
+    }
+
+    for (int i = k; i < len; i++) {
+        swapChar(arr, i, k); //交换
+        perm(arr, k+1, len); //下一次排列
+        swapChar(arr, i, k); //恢复原来的序列
+    }
+}
+
+void testPerm()
+{
+    printf("Test Perm:\n");
+    char arr[] = "abc";
+    perm(arr, 0, strlen(arr));
+}
+
+
+/*****************/
 /** 正则表达式  **/
-/******************/
+/*****************/
 
 /**
  * 匹配主函数
@@ -405,6 +430,7 @@ int matchstar(int c, const char *regexp, const char *text)
  */
 void testRegex()
 {
+    printf("Test Regex:\n");
     string regexp = "xa$";
     string text = "bcabcdefgxa";
     int ret = match(regexp.c_str(), text.c_str());
@@ -418,5 +444,6 @@ int main()
     testRGBSort();
     testMaxSlidingWindow();
     testRegex();
+    testPerm();
     return 0;
 }
