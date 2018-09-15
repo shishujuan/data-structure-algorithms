@@ -171,7 +171,7 @@ void testLongestPalindrome()
 /**** RGB排序 ***/
 /****************/
 
-void swapChar(string s, int i, int j)
+void swapChar(char *s, int i, int j)
 {
     char temp = s[i];
     s[i] = s[j];
@@ -181,7 +181,7 @@ void swapChar(string s, int i, int j)
 /**
  * 划分函数
  */
-void partition(string s, int lo, int hi, char t)
+void partition(char *s, int lo, int hi, char t)
 {
     int m = lo-1, i;
     for (i = lo; i <= hi; i++) {
@@ -194,9 +194,9 @@ void partition(string s, int lo, int hi, char t)
 /**
  * RGB排序-遍历两次
  */
-void rgbSortTwice(string s)
+void rgbSortTwice(char *s)
 { 
-    int len = s.length();
+    int len = strlen(s);
     partition(s, 0, len-1, 'G');  // 以G划分，划分完为 RBBRBBGGGG
     partition(s, 0, len-1, 'B');  // 再以B划分，划分完为 RRGGGGBBBB
 }
@@ -204,9 +204,9 @@ void rgbSortTwice(string s)
 /**
  * RGB排序-遍历一次
  */
-void rgbSortOnce(string s)
+void rgbSortOnce(char *s)
 {
-    int len = s.length();
+    int len = strlen(s);
     int lo = 0, hi = len - 1;
 
     int r, g, i; //++r和++g分别指向R和G交换的位置
@@ -231,13 +231,13 @@ void rgbSortOnce(string s)
  */
 void testRGBSort()
 {
-    string s = "RGBBRGGBGB";
-    printf("Org:%s\n", s.c_str());
+    char s[] = "RGBBRGGBGB";
+    printf("Org:%s\n", s);
     rgbSortTwice(s);
-    printf("Sorted:%s\n", s.c_str());
-    string s2 = "RGBBRGGBBGB";
+    printf("Sorted:%s\n", s);
+    char s2[] = "RGBBRGGBBGB";
     rgbSortOnce(s2);
-    printf("SortedOnce:%s\n", s2.c_str());
+    printf("SortedOnce:%s\n", s2);
 }
 
 
