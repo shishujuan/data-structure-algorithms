@@ -1,18 +1,25 @@
 #ifndef __HEAP_H
 #define __HEAP_H
 
-#define PARENT(i) ((i-1) / 2)
+#define PARENT(i) ( i >= 1 ? (i-1)/2 : 0)
 #define LEFT(i) (2 * i + 1)
 #define RIGHT(i) (2 * i + 2)
 
-typedef struct Heap {
+typedef struct PriorityQueue {
+    int capacity;
     int size;
-    int elem[];
-} Heap;
+    int elems[];
+} PQ;
 
-void maxHeapify(Heap *heap, int i);
-Heap *buildMaxHeap(int a[], int size);
-void heapAddElem(Heap *heap, int key);
-Heap *heapInit(int size);
+void maxHeapify(int A[], int i, int heapSize);
+void buildMaxHeap(int A[], int n);
+void heapSort(int A[], int n);
+
+PQ *newPQ(int A[], int n);
+void printPQ(PQ *pq);
+int maximum(PQ *pq);
+int extractMax(PQ *pq);
+PQ *insert(PQ *pq, int key);
+void increaseKey(PQ *pq, int i, int key);
 
 #endif

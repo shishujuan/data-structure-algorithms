@@ -5,16 +5,23 @@
 int main()
 {
     int a[] = {1, 3, 2, 4, 5, 6};
-    int len = ALEN(a);
-    printIntArray(a, len);
-    Heap *heap = buildMaxHeap(a, len);
-    printIntArray(heap->elem, heap->size);
+    int n = ALEN(a);
 
-    Heap *initHeap = heapInit(0);
+    buildMaxHeap(a, n);
+    printIntArray(a, n);
 
-    int i;
-    for (i = 0; i < len; i++) {
-        heapAddElem(initHeap, a[i]);
-    }
-    printIntArray(initHeap->elem, initHeap->size);
+    int b[] = {1, 3, 2, 4, 5, 6};
+    printIntArray(b, ALEN(b));
+    heapSort(b, n);
+    printIntArray(b, n);
+
+    int c[] = {1, 3, 2, 4, 5, 6};
+    printIntArray(c, ALEN(c));
+    PQ *pq = newPQ(c, ALEN(c));
+    printf("PQ max: %d\n", maximum(pq));
+    printPQ(pq);
+    printf("PQ extractMax: %d\n", extractMax(pq));
+    printPQ(pq);
+    pq = insert(pq, 8);
+    printPQ(pq);
 }

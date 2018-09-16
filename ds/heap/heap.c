@@ -1,64 +1,122 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <util.h>
 #include "heap.h"
 
-void maxHeapify(Heap *heap, int i)
+/**
+ * 保持最大堆性质
+ */
+void maxHeapify(int A[], int i, int heapSize)
 {
     int l = LEFT(i);
     int r = RIGHT(i);
-    int heapSize = heap->size;
-    int *a = heap->elem;
 
     int largest = i;
 
-    if (l <= heapSize-1 && a[l] > a[i]) {
+    if (l <= heapSize-1 && A[l] > A[i]) {
         largest = l;
     }
 
-    if (r <= heapSize-1 && a[r] > a[largest]) {
+    if (r <= heapSize-1 && A[r] > A[largest]) {
         largest = r;
     }
 
-    if (largest != i) {
-        swapInt(a, i, largest);
-        maxHeapify(heap, largest);
+    if (largest != i) { // 最大值不是i，则需要交换i和largest的元素，并递归调用maxHeapify。
+        swapInt(A, i, largest);
+        maxHeapify(A, largest, heapSize);
     }
 }
 
-Heap *buildMaxHeap(int a[], int size)
+/**
+ * 从一个数组建一个最大堆
+ */
+void buildMaxHeap(int A[], int n)
 {
-    Heap *heap = heapInit(size);
+    int i;
+    for (i = n/2-1; i >= 0; i--) {
+        maxHeapify(A, i, n);
+    }
+}
+
+/**
+ * 堆排序
+ */
+void heapSort(int A[], int n)
+{
+    buildMaxHeap(A, n);
+    int heapSize = n;
+    int i;
+    for (i = n-1; i >= 1; i--) {
+        swapInt(A, 0, i);
+        maxHeapify(A, 0, --heapSize);
+    }
+}
+
+/**
+ * 从数组创建优先级队列
+ */
+PQ *newPQ(int A[], int n)
+{
+    PQ *pq = (PQ *)malloc(sizeof(PQ) + sizeof(int) * n);
+    pq->size = 0;
+    pq->capacity = n;
 
     int i;
-    for (i = 0; i < size; i++) {
-        heap->elem[i] = a[i];
+    for (i = 0; i < pq->capacity; i++) {
+        pq->elems[i] = A[i];
+        pq->size++;
     }
+    buildMaxHeap(pq->elems, pq->size);
 
-    for (i = (size / 2 - 1); i >= 0; i--) {
-        maxHeapify(heap, i);
-    }
-    return heap;
+    return pq;
 }
 
-Heap *heapInit(int size)
+/**
+ * 打印优先级队列
+ */
+void printPQ(PQ *pq)
 {
-    Heap *heap = (Heap *)malloc(sizeof(Heap) + sizeof(int) * size);
-    heap->size = size;
-    return heap;
+    int i;
+    for (i = 0; i < pq->size; i++) {
+        printf("%d ", pq->elems[i]);
+    }
+    printf("\n");
 }
 
-void heapAddElem(Heap *heap, int key)
-{
-    int newSize = heap->size + 1;
-    heap = realloc(heap, sizeof(Heap) + sizeof(int) * newSize);
-    heap->size = newSize;
-    heap->elem[newSize - 1] = key;
 
-    int i = newSize - 1;
-    int *elem = heap->elem;
-    while (i > 0 && elem[PARENT(i)] < elem[i]) {
-        swapInt(elem, i, PARENT(i));
+int maximum(PQ *pq)
+{
+    return pq->elems[0];
+}
+
+int extractMax(PQ *pq)
+{
+    int max = pq->elems[0];
+    pq->elems[0] = pq->elems[--pq->size];
+    maxHeapify(pq->elems, 0, pq->size);
+    return max;
+}
+
+PQ *insert(PQ *pq, int key)
+{
+    int newSize = ++pq->size;
+    if (newSize > pq->capacity) {
+        pq->capacity = newSize * 2;
+        pq = (PQ *)realloc(pq, sizeof(PQ) + sizeof(int) * pq->capacity);
+    }
+    pq->elems[newSize-1] = INT_MIN;
+    increaseKey(pq, newSize-1, key);
+    return pq;
+}
+
+void increaseKey(PQ *pq, int i, int key)
+{
+    int *elems = pq->elems;
+    elems[i] = key;
+
+    while (i > 0 && elems[PARENT(i)] < elems[i]) {
+        swapInt(elems, PARENT(i), i);
         i = PARENT(i);
     }
 }
