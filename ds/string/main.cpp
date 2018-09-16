@@ -357,7 +357,7 @@ void testMaxSlidingWindow()
 void perm(char *arr, int k, int len) { //k为起始位置，len为数组大小
     if (k == len-1) { 
         printf("%s\n", arr);
-	return;
+        return;
     }
 
     for (int i = k; i < len; i++) {
@@ -372,6 +372,120 @@ void testPerm()
     printf("Test Perm:\n");
     char arr[] = "abc";
     perm(arr, 0, strlen(arr));
+}
+
+
+/********************/
+/** 最长公共子序列 **/
+/********************/
+
+#define UP 1
+#define LEFT 2
+#define UPLEFT 3
+
+/**
+ * LCS-动态规划算法
+ */
+int lcsLength(char *X, char *Y, int **c, int **b)
+{
+    int m = strlen(X);
+    int n = strlen(Y);
+
+    for (int i = 0; i <= m; i++) {
+        c[i][0] = 0;
+    }
+
+    for (int j = 0; j <= n; j++) {
+        c[0][j] = 0;
+    }
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (X[i-1] == Y[j-1]) {
+                c[i][j] = c[i-1][j-1] + 1;
+                b[i][j] = UPLEFT;
+            } else if (c[i-1][j] >= c[i][j-1]) {
+                c[i][j] = c[i-1][j];
+                b[i][j] = UP;
+            } else {
+                c[i][j] = c[i][j-1];
+                b[i][j] = LEFT;
+            }
+        }
+    }
+
+    return c[m][n];
+}
+
+/**
+ * LCS-递归算法
+ */
+int lcsLengthRecur(char *X, int m, char *Y, int n, int **b)
+{
+    if (m == 0 || n == 0)
+        return 0;
+
+    if (X[m-1] == Y[n-1]) {
+        b[m][n] = UPLEFT;
+        return lcsLengthRecur(X, m-1, Y, n-1, b) + 1;
+    } 
+
+    int len1 = lcsLengthRecur(X, m-1, Y, n, b);
+    int len2 = lcsLengthRecur(X, m, Y, n-1, b);
+
+    int maxLen;
+    if (len1 >= len2) {
+        maxLen = len1;
+        b[m][n] = UP;
+    } else {
+        maxLen = len2;
+        b[m][n] = LEFT;
+    }
+    return maxLen;
+}
+
+/**
+ * 打印LCS，用到辅助数组b
+ */
+void printLCS(int **b, char *X, int i, int j)
+{
+    if (i == 0 || j == 0)
+        return;
+
+    if (b[i][j] == UPLEFT) {
+        printLCS(b, X, i-1, j-1);
+        printf("%c ", X[i-1]);
+    } else if (b[i][j] == UP) {
+        printLCS(b, X, i-1, j);
+    } else {
+        printLCS(b, X, i, j-1);
+    }
+}
+
+void testLCS()
+{
+    char X[] = "ABCBDAB";
+    char Y[] = "BDCABA";
+
+    int lenX = strlen(X);
+    int lenY = strlen(Y);
+
+    int **b = (int **)calloc(sizeof(int *), lenX+1);
+    for (int i = 0; i < lenX+1; i++) {
+        b[i] = (int *)calloc(sizeof(int), lenY+1);
+    }
+
+    int **c = (int **)calloc(sizeof(int *), lenX+1);
+    for (int i = 0; i < lenX+1; i++) {
+        c[i] = (int *)calloc(sizeof(int), lenY+1);
+    }
+
+    printf("Test LCS:\n");
+    // int lcsLen = lcsLength(X, Y, c, b);
+    int lcsLen = lcsLengthRecur(X, lenX, Y, lenY, b);
+    printf("lcsLen: %d\n", lcsLen);
+    printLCS(b, X, lenX, lenY);
+    printf("\n");
 }
 
 
@@ -445,5 +559,6 @@ int main()
     testMaxSlidingWindow();
     testRegex();
     testPerm();
+    testLCS();
     return 0;
 }
