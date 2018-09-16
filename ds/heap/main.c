@@ -4,16 +4,16 @@
 
 int main()
 {
-    int a[] = {1, 3, 2, 4, 5, 6};
-    int n = ALEN(a);
+    printf("Build max heap: \n");
+    int a[] = {16, 4, 10, 14, 7, 9, 3, 2, 8, 1};
+    buildMaxHeap(a, ALEN(a));
+    printIntArray(a, ALEN(a));
 
-    buildMaxHeap(a, n);
-    printIntArray(a, n);
-
+    printf("Heapsort:\n");
     int b[] = {1, 3, 2, 4, 5, 6};
     printIntArray(b, ALEN(b));
-    heapSort(b, n);
-    printIntArray(b, n);
+    heapSort(b, ALEN(b));
+    printIntArray(b, ALEN(b));
 
     int c[] = {1, 3, 2, 4, 5, 6};
     printIntArray(c, ALEN(c));
