@@ -137,7 +137,7 @@ BTNode *bstSearchIter(BTNode *root, BTNode **parent, int value)
             current = current->right;
     }
 
-    return current ? current : NULL;
+    return current;
 }
 
 /**
