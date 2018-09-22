@@ -23,7 +23,7 @@ BTNode *bstInsert(BTNode *root, int value)
     if (!root)
         return newNode(value);
 
-    if (root->value >= value) {
+    if (root->value > value) {
         root->left = bstInsert(root->left, value);
     } else {
         root->right = bstInsert(root->right, value);
@@ -45,7 +45,7 @@ BTNode *bstInsertIter(BTNode *root, int value)
 
     while (current) {
         parent = current;
-        if (current->value >= value)
+        if (current->value > value)
             current = current->left;
         else
             current = current->right;
