@@ -191,7 +191,7 @@ int height(BTNode *root)
 /*********************/
 
 /**
- * 二叉树前序遍历
+ * 二叉树先序遍历
  */
 void preOrder(BTNode *root)
 {
@@ -260,7 +260,7 @@ void levelOrderInLevel(BTNode *root, int level)
 /*********************/
 
 /**
- * 前序遍历-非递归
+ * 先序遍历-非递归
  */
 void preOrderIter(BTNode *root)
 {
