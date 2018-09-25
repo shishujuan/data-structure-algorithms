@@ -8,5 +8,7 @@ void swapInt(int a[], int i, int j);
 void swapChar(char a[], int i, int j);
 void printIntArray(int a[], int len);
 void printCharArray(char a[], int len);
+int max(int a, int b);
+int max3(int a, int b, int c);
 
 #endif

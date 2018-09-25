@@ -56,3 +56,15 @@ void swapChar(char a[], int i, int j)
     a[i] = a[j];
     a[j] = temp;
 }
+
+int max3(int a, int b, int c)
+{
+    if (a >=b && a >= c)
+        return a;
+    return max3(b, c, a);
+}
+
+int max(int a, int b)
+{
+    return a >= b ? a : b;
+}

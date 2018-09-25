@@ -7,7 +7,7 @@
 /**
  * 创建BTNode
  */
-BTNode *newNode(int value)
+BTNode *btNewNode(int value)
 {
     BTNode *node = (BTNode *)malloc(sizeof(BTNode));
     node->value = value;
@@ -21,7 +21,7 @@ BTNode *newNode(int value)
 BTNode *bstInsert(BTNode *root, int value)
 {
     if (!root)
-        return newNode(value);
+        return btNewNode(value);
 
     if (root->value > value) {
         root->left = bstInsert(root->left, value);
@@ -36,7 +36,7 @@ BTNode *bstInsert(BTNode *root, int value)
  */
 BTNode *bstInsertIter(BTNode *root, int value)
 {
-    BTNode *node = newNode(value);
+    BTNode *node = btNewNode(value);
 
     if (!root)
         return node;
@@ -165,24 +165,36 @@ BTNode *bstMax(BTNode *root)
 /**
  * 二叉树结点数目
  */
-int size(BTNode *root)
+int btSize(BTNode *root)
 {
     if (!root) return 0;
     
-    return size(root->left) + size(root->right) + 1;
+    return btSize(root->left) + btSize(root->right) + 1;
 }
 
 /**
  * 二叉树高度
  */
-int height(BTNode *root)
+int btHeight(BTNode *root)
 {
     if (!root) return 0;
 
-    int leftHeight = height(root->left);
-    int rightHeight = height(root->right);
+    int leftHeight = btHeight(root->left);
+    int rightHeight = btHeight(root->right);
     int maxHeight = leftHeight > rightHeight ? leftHeight+1 : rightHeight+1;
     return maxHeight;
+}
+
+/**
+ * 二叉树结点存在性判断
+ */
+int btExist(BTNode *root, BTNode *node)
+{
+    if (!root) return 0;
+
+    if (root == node) return 1;
+
+    return btExist(root->left, node) || btExist(root->right, node);
 }
 
 
@@ -231,9 +243,9 @@ void postOrder(BTNode *root)
  */
 void levelOrder(BTNode *root)
 {
-    int btHeight = height(root);    
+    int height = btHeight(root);    
     int level;
-    for (level = 1; level <= btHeight; level++) {
+    for (level = 1; level <= height; level++) {
         levelOrderInLevel(root, level);
         printf("\n");
     }
@@ -266,8 +278,8 @@ void preOrderIter(BTNode *root)
 {
     if (!root) return;
 
-    int btSize = size(root);
-    BTNodeStack *stack = stackNew(btSize);
+    int size = btSize(root);
+    BTNodeStack *stack = stackNew(size);
 
     push(stack, root);
     while (!IS_EMPTY(stack)) {
@@ -290,7 +302,7 @@ void inOrderIter(BTNode *root)
 {
     if (!root) return;
 
-    BTNodeStack *stack = stackNew(size(root));
+    BTNodeStack *stack = stackNew(btSize(root));
 
     BTNode *current = root;
     while (current || !IS_EMPTY(stack)) {
@@ -311,7 +323,7 @@ void inOrderIter(BTNode *root)
  */
 void postOrderIter(BTNode *root)
 {
-    BTNodeStack *stack = stackNew(size(root));
+    BTNodeStack *stack = stackNew(btSize(root));
     BTNode *current = root;
     do { 
         // 移动至最左边结点
@@ -345,8 +357,8 @@ void postOrderIterWith2Stack(BTNode *root)
 {
     if (!root) return;
 
-    BTNodeStack *stack = stackNew(size(root));
-    BTNodeStack *output = stackNew(size(root));
+    BTNodeStack *stack = stackNew(btSize(root));
+    BTNodeStack *output = stackNew(btSize(root));
 
     push(stack, root);
     BTNode *node;
@@ -375,7 +387,7 @@ void levelOrderIter(BTNode *root)
 {
     if (!root) return;
 
-    BTNodeQueue *queue = queueNew(size(root));
+    BTNodeQueue *queue = queueNew(btSize(root));
     enqueue(queue, root);
 
     while (1) {

@@ -7,7 +7,7 @@ typedef struct BTNode {
     struct BTNode *right;
 } BTNode;
 
-BTNode *newNode(int value);
+BTNode *btNewNode(int value);
 BTNode *bstInsert(BTNode *root, int value);
 BTNode *bstInsertIter(BTNode *root, int value);
 BTNode *bstDelete(BTNode *root, int value);
@@ -16,8 +16,9 @@ BTNode *bstSearchIter(BTNode *root, BTNode **parent, int value);
 BTNode *bstMin(BTNode *root);
 BTNode *bstMax(BTNode *root);
 
-int size(BTNode *root);
-int height(BTNode *root);
+int btSize(BTNode *root);
+int btHeight(BTNode *root);
+int btExist(BTNode *root, BTNode *node);
 
 void preOrder(BTNode *root);
 void inOrder(BTNode *root);
