@@ -68,3 +68,13 @@ int max(int a, int b)
 {
     return a >= b ? a : b;
 }
+
+int maxOfIntArray(int a[], int len)
+{
+    int max = a[0], i;
+    for (i = 1; i < len; i++) {
+        if (a[i] > max)
+            max = a[i];
+    }
+    return max;
+}

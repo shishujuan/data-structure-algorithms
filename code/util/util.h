@@ -11,4 +11,6 @@ void printCharArray(char a[], int len);
 int max(int a, int b);
 int max3(int a, int b, int c);
 
+int maxOfIntArray(int a[], int len);
+
 #endif
