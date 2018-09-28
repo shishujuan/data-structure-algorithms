@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "util.h"
 
 /**
@@ -57,6 +58,9 @@ void swapChar(char a[], int i, int j)
     a[j] = temp;
 }
 
+/**
+ * 取三个数中最大值，对称式递归
+ */
 int max3(int a, int b, int c)
 {
     if (a >=b && a >= c)
@@ -69,6 +73,9 @@ int max(int a, int b)
     return a >= b ? a : b;
 }
 
+/**
+ * 数组最大值
+ */
 int maxOfIntArray(int a[], int len)
 {
     int max = a[0], i;
@@ -77,4 +84,23 @@ int maxOfIntArray(int a[], int len)
             max = a[i];
     }
     return max;
+}
+
+/*
+ * 返回[l,u]范围的随机数
+ */ 
+int randInt(int l, int u)
+{ 
+	srand(time(NULL)); 
+	return rand()%(u-l+1) + l;
+}
+
+int *copyIntArray(int a[], int n)
+{
+    int *b = (int *)malloc(sizeof(int) * n);
+    int i;
+    for (i = 0; i < n; i++) {
+        b[i] = a[i];
+    }
+    return b;
 }

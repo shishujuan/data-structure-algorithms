@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <util.h>
+#include <stack.h>
 #include "sort.h"
 
 /**
@@ -18,6 +19,19 @@ void insertSort(int a[], int n)
             a[j] = a[j-1];
         }
         a[j] = key;
+    }
+}
+
+
+/**
+ * 插入排序-另外一种实现
+ */
+void insertSortSwap(int a[], int l, int u) 
+{ 
+    int i, j;
+    for (i = l; i < u; i++) { 
+        for (j = i+1; j>l && a[j-1]>a[j]; j--) 
+            swapInt(a, j, j-1); 
     }
 }
 
@@ -184,4 +198,171 @@ void mergeSortIter(int a[], int n)
     }
     //最后再从头到尾处理一遍
     merge(a, 0, s/2-1, n-1);
+}
+
+/**
+ * 快速排序-朴素版本
+ */
+void quickSort(int a[], int l, int u)
+{
+    if (l >= u) return;
+
+    int q = partition(a, l, u);
+    quickSort(a, l, q-1);
+    quickSort(a, q+1, u);
+}
+
+/**
+ * 快速排序-划分函数
+ */
+int partition(int a[], int l, int u)
+{
+    int i, q=l;
+    for (i = l+1; i <= u; i++) {
+        if (a[i] < a[l])
+            swapInt(a, i, ++q);
+    }
+    swapInt(a, l, q);
+    return q;
+}
+
+/**
+ * 快速排序-双向划分法
+ */
+void quickSortLR(int a[], int l, int u)
+{
+    if (l >= u) return;
+
+    int pivot = a[l];
+    int q = partitionLR(a, l, u, pivot);
+    quickSortLR(a, l, q-1);
+    quickSortLR(a, q+1, u);
+}
+
+/**
+ * 快速排序-双向划分函数
+ */
+int partitionLR(int a[], int l, int u, int pivot)
+{
+    int i = l;
+    int j = u+1;
+    while (1) {
+        do {
+            i++;
+        } while (a[i] < pivot && i <= u); //注意i<=u这个判断条件，不能越界。
+
+        do {
+            j--;
+        } while (a[j] > pivot);
+
+        if (i > j) break;
+
+        swapInt(a, i, j);
+    }
+
+    // 注意这里是交换l和j，而不是l和i，因为i与j交叉后，a[i...u]都大于等于枢纽元t，
+    // 而枢纽元又在最左边，所以不能与i交换。只能与j交换。
+    swapInt(a, l, j);
+
+    return j;
+}
+
+/**
+ * 快速排序-随机枢纽元版本
+ */
+void quickSortLRRandom(int a[], int l, int u)
+{ 
+    if (l >= u) return;
+
+    int pivot = pivotRandom(a, l, u);
+    int p = partitionLR(a, l, u, pivot);
+    quickSortLRRandom(a, l, p-1); 
+    quickSortLRRandom(a, p+1, u);
+}
+
+
+/**
+ * 随机选择枢纽元
+ */
+int pivotRandom(int a[], int l, int u)
+{
+    int rand = randInt(l, u);
+    swapInt(a, l, rand);
+    return a[l];
+}
+
+
+/**
+ * 快速排序-三数取中作为枢纽元版本
+ */
+void quickSortLRMedian3(int a[], int l, int u)
+{ 
+    if (l >= u) return;
+
+    int pivot = pivotMedian3(a, l, u);
+    int p = partitionLR(a, l, u, pivot);
+
+    quickSortLRMedian3(a, l, p-1); 
+    quickSortLRMedian3(a, p+1, u);
+}
+
+/**
+ * 三数取中选择枢纽元
+ */
+int pivotMedian3(int a[], int l, int u)
+{
+     int m = l + (u-l)/2;
+
+     /*
+      * 三数排序
+      */
+     if( a[l] > a[m] )
+        swapInt(a, l, m);
+
+     if( a[l] > a[u] )
+        swapInt(a, l, u);
+
+     if( a[m] > a[u] )
+        swapInt(a, m, u);
+
+     /* assert: a[l] <= a[m] <= a[u] */
+     swapInt(a, m, l); //交换枢纽元到位置l
+
+     return a[l]; //返回枢纽元
+}
+
+/**
+ * 快速排序-非递归版本
+ */
+void quickSortIter(int a[], int n)
+{
+    Stack *stack = stackNew(n);
+    int l = 0, u = n-1;
+    int p = partition(a, l, u);
+
+    if (p-1 > l) { //左半部分两个边界值入栈
+        push(stack, p-1); 
+        push(stack, l);
+    }
+
+    if (p+1 < u) { //右半部分两个边界值入栈
+        push(stack, u);
+        push(stack, p+1);
+    }
+
+    while (!IS_EMPTY(stack)) { //栈不为空，则循环划分过程
+        l = pop(stack);
+        u = pop(stack);
+        p = partition(a, l, u);
+
+        if (p-1 > l) {
+            push(stack, p-1);
+            push(stack, l);
+        }
+
+        if (p+1 < u) {
+            push(stack, u);
+            push(stack, p+1);
+        }
+    }
 }

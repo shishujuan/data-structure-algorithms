@@ -12,5 +12,8 @@ int max(int a, int b);
 int max3(int a, int b, int c);
 
 int maxOfIntArray(int a[], int len);
+int randInt(int l, int u);
+
+int *copyIntArray(int a[], int n);
 
 #endif
