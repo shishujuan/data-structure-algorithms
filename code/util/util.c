@@ -74,6 +74,21 @@ int max(int a, int b)
 }
 
 /**
+ * 取三个数中最小值
+ */
+int min3(int a, int b, int c)
+{
+    if (a <=b && a <= c)
+        return a;
+    return max3(b, c, a);
+}
+
+int min(int a, int b)
+{
+    return a <= b ? a : b;
+}
+
+/**
  * 数组最大值
  */
 int maxOfIntArray(int a[], int len)
@@ -103,4 +118,24 @@ int *copyIntArray(int a[], int n)
         b[i] = a[i];
     }
     return b;
+}
+
+/**
+ * 十进制转二进制
+ */
+char *bin(int x)
+{
+    int n = sizeof(x) * 8;
+    int i;
+    char *ret = (char *)malloc(n + 1);
+
+    for(i = n-1; i >= 0; i--) {
+       if ( x & ( 1 << i) )
+           ret[i] = '1';
+       else
+           ret[i] = '0';
+    }
+
+    ret[n] = '\0';
+    return ret;
 }
